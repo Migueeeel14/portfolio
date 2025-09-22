@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio Miguel de la Cruz - Full Stack Developer</title>
+    <meta name="description"
+        content="Portfolio de Miguel de la Cruz, desarrollador full-stack especializado en web, automatización y Big Data. Descubre mis proyectos, habilidades y cómo contactarme." />
+    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+    <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;700;900"
+        onload="this.rel='stylesheet'" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "secondary": "#6c63ff",
+                        "accent": "#ffb347",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "glass": "rgba(255,255,255,0.15)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "glass": "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                    }
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        :root {
+            --header-height: 64px;
+            /* altura fija del header */
+            --header-gap: 16px;
+            /* separación visual entre header y contenido */
+            --container-max: 1200px;
+            --content-pad: 24px;
+            --card-radius: 12px;
+            --accent: #137fec;
+        }
+
+        /* Reset y animaciones */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px) scale(0.995);
+            transition: opacity 0.6s cubic-bezier(.4, 0, .2, 1), transform 0.6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .fade-out {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition: opacity 0.6s cubic-bezier(.4, 0, .2, 1), transform 0.6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .fade-out.hidden {
+            opacity: 0;
+            transform: translateY(-24px) scale(.995);
+        }
+
+        /* Header / navegación */
+        header {
+            height: var(--header-height);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+        }
+
+        nav {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 180ms ease;
+        }
+
+        /* Fallback for browsers without color-mix support: use a semi-transparent accent */
+        .nav-btn:focus {
+            outline: 3px solid rgba(19, 127, 236, 0.20);
+            outline-offset: 2px;
+        }
+
+        /* If the browser supports color-mix, prefer the original dynamic mix using the CSS variable */
+        @supports (outline-color: color-mix(in srgb, var(--accent) 20%, transparent)) {
+            .nav-btn:focus {
+                outline: 3px solid color-mix(in srgb, var(--accent) 20%, transparent);
+            }
+        }
+
+        .nav-active {
+            color: var(--accent) !important;
+            font-weight: 700;
+            box-shadow: inset 0 -2px 0 var(--accent);
+            background: linear-gradient(90deg, #137fec18 0%, #6c63ff12 100%);
+            transform: translateY(-1px);
+        }
+
+        /* Visual / layout consistente */
+        .container-inner {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--content-pad);
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6));
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(16, 25, 34, 0.06);
+            border: 1px solid rgba(16, 25, 34, 0.04);
+        }
+
+        .card-dark {
+            background: linear-gradient(180deg, rgba(16, 25, 34, 0.45), rgba(16, 25, 34, 0.35));
+            border-radius: var(--card-radius);
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* Scroll-snap layout (Opción B) mejorada */
+        .scroll-container {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: y proximity;
+            /* proximity reduce "pegajoso" agresivo en secciones largas */
+            -webkit-overflow-scrolling: touch;
+            padding-top: var(--header-height);
+            /* sólo compensar header (reduce el espacio inicial) */
+        }
+
+        .section {
+            min-height: calc(100vh - var(--header-gap));
+            scroll-snap-align: start;
+            box-sizing: border-box;
+            padding: calc(var(--header-gap) + 12px) var(--content-pad) 48px;
+            scroll-margin-top: calc(var(--header-height) + 12px);
+            /* compensar header fijo al hacer scrollIntoView */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+        }
+
+        /* Centrar visualmente el inicio y reducir la separación extra */
+        .scroll-container>.section:first-of-type {
+            /* mantener una separación pequeña debajo del header y centrar el contenido */
+            padding-top: calc(var(--header-gap) + 8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-container>.section:first-of-type .inner {
+            text-align: center;
+            /* asegurar centrado del contenido interno */
+            width: 100%;
+            max-width: var(--container-max);
+        }
+
+        /* Permitir scroll interno en secciones largas y mantener el centrado cuando cabe en pantalla */
+        .section .inner {
+            width: 100%;
+            max-width: var(--container-max);
+            /* si el contenido excede, permitimos scroll interno en la sección */
+            max-height: calc(100vh - var(--header-height) - 120px);
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        @media (max-width: 640px) {
+            .section .inner {
+                max-height: calc(100vh - var(--header-height) - 80px);
+            }
+
+            .scroll-container {
+                padding-top: var(--header-height);
+            }
+        }
+
+        /* Tipografías / títulos */
+        .section h1,
+        .section h2 {
+            margin-bottom: 0.5rem;
+            line-height: 1.05;
+        }
+
+        .section p {
+            color: #475569;
+        }
+
+        /* gris más legible */
+
+        /* Mejoras específicas para Grid / tarjetas */
+        .projects-grid {
+            gap: 1.25rem;
+        }
+
+        .project-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.8));
+            transition: transform .28s ease, box-shadow .28s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 48px rgba(16, 25, 34, 0.12);
+        }
+
+        /* Accesibilidad: contrates y focus */
+        a,
+        button {
+            transition: color .15s ease, background .15s ease;
+        }
+
+        a:focus,
+        button:focus {
+            outline: 3px solid rgba(19, 127, 236, 0.16);
+            outline-offset: 2px;
+        }
+
+        /* Reveal children animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(10px) scale(.995);
+            transition: opacity 420ms cubic-bezier(.2, .8, .2, 1), transform 420ms cubic-bezier(.2, .8, .2, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Respecta prefer-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                transition: none;
+                transform: none;
+                opacity: 1;
+            }
+
+            .scroll-container {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* Clase que desactiva snap (se activa por JS cuando la sección desborda) */
+        .no-snap {
+            scroll-snap-type: none !important;
+        }
+
+        /* Header pequeño al hacer scroll */
+        header.shrunk {
+            height: 52px;
+            transition: height 220ms ease;
+        }
+
+        @media (max-width:640px) {
+            header.shrunk {
+                height: 48px;
+            }
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 640px) {
+            :root {
+                --header-height: 56px;
+                --container-max: 1000px;
+            }
+
+            .section {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .nav-btn {
+                padding: 6px 8px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Contact card — integrado con el tema */
+        .contact-card {
+            width: 420px;
+            /* menos ancha */
+            max-width: calc(100% - 48px);
+            /* mantiene margen en pantallas pequeñas */
+            min-height: 360px;
+            /* más alta */
+            border-radius: 16px;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+            /* que los botones ocupen el ancho de la card */
+            background: linear-gradient(180deg, rgba(19, 127, 236, 0.04), rgba(108, 99, 255, 0.02));
+            border: 1px solid rgba(19, 127, 236, 0.08);
+            box-shadow: 0 12px 30px rgba(16, 25, 34, 0.06);
+            color: inherit;
+            margin: 0 auto;
+            /* centra horizontalmente */
+        }
+
+        @media (max-width: 640px) {
+            .contact-card {
+                width: 100%;
+                min-height: 300px;
+                padding: 1rem;
+            }
+        }
+
+        .contact-card .meta {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .contact-card .meta img {
+            width: 56px;
+            height: 56px;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .contact-card h2 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--accent);
+        }
+
+        .contact-card p.lead {
+            margin: 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .contact-email {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #0f172a;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .contact-email .icon {
+            opacity: 0.95;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 0.75rem;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+        }
+
+        .contact-btn:active {
+            transform: translateY(1px);
+        }
+
+        .contact-btn.primary {
+            background: linear-gradient(90deg, var(--accent), #6c63ff);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(19, 127, 236, 0.12);
+        }
+
+        .contact-btn.ghost {
+            background: transparent;
+            color: var(--accent);
+            border-color: rgba(19, 127, 236, 0.10);
+        }
+
+        .contact-btn.ghost:hover {
+            background: rgba(19, 127, 236, 0.04);
+        }
+
+        .contact-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        /* ===== Skills: estilo compacto y barras de nivel ===== */
+        .skills-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 768px) {
+            .skills-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .skills-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.55));
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(16, 25, 34, 0.05);
+            box-shadow: 0 8px 20px rgba(16, 25, 34, 0.04);
+        }
+
+        .dark .skills-card {
+            background: linear-gradient(180deg, rgba(16, 25, 34, 0.5), rgba(16, 25, 34, 0.42));
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .skills-card h4 {
+            margin: 0 0 .5rem 0;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .6rem;
+            padding: .45rem 0;
+        }
+
+        .skill-meta {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            min-width: 0;
+        }
+
+        .skill-meta img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .skill-name {
+            font-size: .95rem;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dark .skill-name {
+            color: #e6eefc;
+        }
+
+        .skill-right {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            min-width: 0;
+        }
+
+        .skill-badge {
+            font-size: .68rem;
+            padding: .18rem .4rem;
+            border-radius: 999px;
+            background: rgba(19, 127, 236, 0.08);
+            color: var(--accent);
+            border: 1px solid rgba(19, 127, 236, 0.06);
+        }
+
+        .skill-bar {
+            width: 110px;
+            height: 8px;
+            background: rgba(3, 37, 65, 0.06);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .skill-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #6c63ff);
+            width: 0;
+            transition: width .7s cubic-bezier(.2, .9, .2, 1);
+        }
+
+        /* pequeño ajuste en móviles */
+        @media (max-width:640px) {
+            .skill-bar {
+                width: 92px;
+            }
+
+            .skill-meta img {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        /* ===== Estudios / Educación ===== */
+        .education-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (min-width:768px) {
+            .education-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem 1.5rem;
+            }
+        }
+
+        .edu-item {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.55));
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            border: 1px solid rgba(16, 25, 34, 0.05);
+            box-shadow: 0 8px 20px rgba(16, 25, 34, 0.04);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .dark .edu-item {
+            background: linear-gradient(180deg, rgba(16, 25, 34, 0.45), rgba(16, 25, 34, 0.35));
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .edu-year {
+            min-width: 78px;
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .edu-body {
+            flex: 1;
+        }
+
+        .edu-degree {
+            margin: 0 0 4px 0;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .dark .edu-degree {
+            color: #e6eefc;
+        }
+
+        .edu-institution {
+            margin: 0;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .edu-note {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* fin Educación */
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+    <header
+        class="fixed top-0 left-0 w-full z-20 bg-background-light/88 dark:bg-background-dark/88 border-b border-gray-200 dark:border-gray-700">
+        <nav class="container-inner flex items-center justify-between" role="navigation"
+            aria-label="Navegación principal" style="height:var(--header-height);">
+            <div class="flex items-center gap-3">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Miguel"
+                    class="w-10 h-10 rounded-full object-cover border-2 border-primary" />
+                <span class="font-bold text-lg text-gray-900 dark:text-white">Portfolio - Miguel</span>
+            </div>
+
+            <ul class="flex-1 flex justify-center gap-4" role="menubar" aria-label="Navegación principal">
+                <li role="none"><button role="menuitem"
+                        class="nav-btn nav-btn--link text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
+                        data-index="0" aria-label="Ir a Inicio">Inicio</button></li>
+                <li role="none"><button role="menuitem"
+                        class="nav-btn nav-btn--link text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
+                        data-index="1" aria-label="Ir a Skills">Skills</button></li>
+                <li role="none"><button role="menuitem"
+                        class="nav-btn nav-btn--link text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
+                        data-index="2" aria-label="Ir a Estudios">Estudios</button></li>
+                <li role="none"><button role="menuitem"
+                        class="nav-btn nav-btn--link text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
+                        data-index="3" aria-label="Ir a Proyectos">Proyectos</button></li>
+                <li role="none"><button role="menuitem"
+                        class="nav-btn nav-btn--link text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors"
+                        data-index="4" aria-label="Ir a Contacto">Contacto</button></li>
+            </ul>
+
+            <div class="flex items-center gap-3">
+                <!-- botón de tema: accesible y controlable por JS -->
+                <button id="theme-toggle"
+                    class="text-sm text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none"
+                    aria-pressed="false" aria-label="Cambiar tema">
+                    <span id="theme-icon" aria-hidden="true">🌓</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="scroll-container">
+        <section id="intro" class="section fade-out">
+            <div class="inner text-center space-y-8">
+                <div class="space-y-4">
+                    <h1
+                        class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight">
+                        Hola, soy Miguel de la Cruz.<br class="sm:hidden" />Full-Stack Developer.
+                    </h1>
+                    <p class="text-lg sm:text-xl max-w-2xl mx-auto text-gray-600 dark:text-gray-400">
+                        Lo que más me gusta es crear páginas web y aplicaciones web que sean rápidas, accesibles y
+                        fáciles de usar.
+                        Me llama mucho la atención el mundo de las ais y la automatización de procesos. Este 25/26
+                        empezaré mi especialización de Big Data e Inteligencia Artificial.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a class="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors duration-300"
+                        href="cv-miguel.pdf" target="_blank" rel="noopener">
+                        <span class="material-symbols-outlined">visibility</span>
+                        <span>Ver CV</span>
+                    </a>
+                    <a class="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-primary/10 dark:bg-primary/20 text-primary font-bold rounded-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors duration-300"
+                        href="cv-miguel.pdf" download>
+                        <span class="material-symbols-outlined">download</span>
+                        <span>Descargar CV</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- sección de skills compacta (fusionada, Front / Back / DB) -->
+        <section id="skills" class="section fade-in" aria-label="Skills">
+            <div class="inner">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-1">Skills</h2>
+                    <p class="text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        Tecnologías agrupadas por Front‑end, Back‑end y Bases de datos. Nivel indicado para cada una.
+                    </p>
+                </div>
+
+                <div class="skills-grid">
+                    <!-- Front-end -->
+                    <div class="skills-card">
+                        <h4>Front‑end</h4>
+                        <ul class="skill-list" aria-hidden="false">
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/html5.svg" alt="HTML">
+                                    <span class="skill-name">HTML</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar" aria-hidden="true">
+                                        <div class="fill" style="width:95%"></div>
+                                    </div>
+                                    <span class="skill-badge">95%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/css3.svg" alt="CSS">
+                                    <span class="skill-name">CSS</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar" aria-hidden="true">
+                                        <div class="fill" style="width:85%"></div>
+                                    </div>
+                                    <span class="skill-badge">85%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/javascript.svg" alt="JavaScript">
+                                    <span class="skill-name">JavaScript</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar" aria-hidden="true">
+                                        <div class="fill" style="width:80%"></div>
+                                    </div>
+                                    <span class="skill-badge">80%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/react.svg" alt="React">
+                                    <span class="skill-name">React</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar" aria-hidden="true">
+                                        <div class="fill" style="width:80%"></div>
+                                    </div>
+                                    <span class="skill-badge">80%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/tailwindcss.svg" alt="Tailwind">
+                                    <span class="skill-name">Tailwind</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar" aria-hidden="true">
+                                        <div class="fill" style="width:80%"></div>
+                                    </div>
+                                    <span class="skill-badge">80%</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Back-end -->
+                    <div class="skills-card">
+                        <h4>Back‑end</h4>
+                        <ul class="skill-list">
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/python.svg" alt="Python">
+                                    <span class="skill-name">Python</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:90%"></div>
+                                    </div>
+                                    <span class="skill-badge">90%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/node-dot-js.svg" alt="Node.js">
+                                    <span class="skill-name">Node.js</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:80%"></div>
+                                    </div>
+                                    <span class="skill-badge">80%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/java.svg" alt="Java">
+                                    <span class="skill-name">Java</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:75%"></div>
+                                    </div>
+                                    <span class="skill-badge">75%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://via.placeholder.com/28x28?text=C%2B%2B" alt="C++">
+                                    <span class="skill-name">C++</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:60%"></div>
+                                    </div>
+                                    <span class="skill-badge">60%</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Databases -->
+                    <div class="skills-card">
+                        <h4>Bases de datos</h4>
+                        <ul class="skill-list">
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/postgresql.svg" alt="PostgreSQL">
+                                    <span class="skill-name">PostgreSQL</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:70%"></div>
+                                    </div>
+                                    <span class="skill-badge">70%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <img src="https://simpleicons.org/icons/mongodb.svg" alt="MongoDB">
+                                    <span class="skill-name">MongoDB</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:65%"></div>
+                                    </div>
+                                    <span class="skill-badge">65%</span>
+                                </div>
+                            </li>
+
+                            <li class="skill-item">
+                                <div class="skill-meta">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"
+                                        aria-hidden="true">
+                                        <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2z" />
+                                    </svg>
+                                    <span class="skill-name">SQL</span>
+                                </div>
+                                <div class="skill-right">
+                                    <div class="skill-bar">
+                                        <div class="fill" style="width:70%"></div>
+                                    </div>
+                                    <span class="skill-badge">70%</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- fin sección skills compacta -->
+
+        <!-- sección Estudios (colocar entre Skills y Proyectos) -->
+        <section id="education" class="section fade-in" aria-label="Estudios">
+            <div class="inner">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-1">Estudios</h2>
+                    <p class="text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        Formación formal y cursos relevantes — ordenados por fecha.
+                    </p>
+                </div>
+
+                <div class="education-grid">
+                    <article class="edu-item" aria-hidden="false">
+                        <div class="edu-year">2018 — 2022</div>
+                        <div class="edu-body">
+                            <div class="edu-degree">Grado en Ingeniería Informática</div>
+                            <p class="edu-institution">Universidad de Ejemplo · Madrid</p>
+                            <p class="edu-note">Asignaturas destacadas: Bases de datos, Arquitectura web, Inteligencia
+                                artificial.</p>
+                        </div>
+                    </article>
+
+                    <article class="edu-item">
+                        <div class="edu-year">2023</div>
+                        <div class="edu-body">
+                            <div class="edu-degree">Bootcamp Full‑Stack</div>
+                            <p class="edu-institution">Academia DevBoot · Online</p>
+                            <p class="edu-note">Proyecto final: aplicación web con React + Node.js + PostgreSQL.</p>
+                        </div>
+                    </article>
+
+                    <article class="edu-item">
+                        <div class="edu-year">2024</div>
+                        <div class="edu-body">
+                            <div class="edu-degree">Especialización en Big Data y IA</div>
+                            <p class="edu-institution">Plataforma X / Cursos profesionales</p>
+                            <p class="edu-note">Procesamiento de datos, pipelines ETL y modelos supervisados.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <!-- fin sección Estudios -->
+
+        <section id="projects" class="section fade-in">
+            <div class="inner w-full max-w-7xl mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white tracking-tighter">Proyectos
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                        Una selección de mi trabajo reciente, mostrando mis habilidades y experiencia en distintos
+                        dominios.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        class="group overflow-hidden rounded-lg bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-xl transition-all duration-300">
+                        <div class="relative">
+                            <div class="w-full h-48 bg-cover bg-center"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTxksich4CEvjI7qwisFWZrpE-DwA0Qj0Cvhty3s-rkN9lv095w1b-1GZlKx6B3mXBUkTb9XW6cyHAFlwSC2xXy8Te2Y_5lLNaJqCefGlTkoYVPfRJh-sO4TvH4hYUXdrL-1FmyLGEV5EJoVKzOmZFO7WhSprDJhl0wDBevMll5hHRczToBGVaGu0EILNMQiadVbUl6mAKItqH2fcYN_hQKC7_LGGTT1yoISF4lH0khEKZvJZ0Y7w6fnfa1NLg5_ajBVf1LDZwXJmB");'>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300">
+                            </div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <a class="bg-primary text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full hover:bg-primary/80 transition-colors"
+                                    href="#">Ver Proyecto</a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">E-commerce Platform
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                A full-featured e-commerce platform with user authentication, product management, and
+                                payment integration.
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="group overflow-hidden rounded-lg bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-xl transition-all duration-300">
+                        <div class="relative">
+                            <div class="w-full h-48 bg-cover bg-center"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBzFMYftkwSUuzSvzdO4rOX0jLceNVTMBbndNVrIfuEvhB1ndRNoOhR56A4hArdNpDEV_XRYYQQ2emBKNLWl1V9AnhGfZdQg8h_gGXZi0hxPd-n0JDKVktK822EP5urCs4_alMQ_17vAI3kbELfq37WDyqCUVaYI-tb6dxtDJ9XOKyr66u7t6bgOHI4TSy6KMFQYh31RO9fCw5uBBvKauRJtyt3L1eGSkZG8Ibh2d2xjcPDynAIGurBlwgklkFIt7DJhSfoLyECOkTF");'>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300">
+                            </div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <a class="bg-primary text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full hover:bg-primary/80 transition-colors"
+                                    href="#">Ver Proyecto</a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Mobile App for Fitness
+                                Tracking</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                A mobile application designed to track fitness activities, set goals, and monitor
+                                progress.
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="group overflow-hidden rounded-lg bg-white dark:bg-gray-800/50 shadow-sm hover:shadow-xl transition-all duration-300">
+                        <div class="relative">
+                            <div class="w-full h-48 bg-cover bg-center"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCdM8LdM9wpGT2IXTyb8uCscN_V0aYLN-Hn79VvhVJPkCG0cg2heCPcFxwEyauLXSW7M9toUHlJJ_aesMhG50N6h4DEgwR2BOCgA9nJ3VrQNSqfeG1_1-sItOj83a6ViC7lUrVv04voqJg4oDm1b3HrVTEOxLTFxjPQYWx2lWUGv6MuXP7gQQ-cGpuSAY0vjw6aJwykC50SrB9IWwodaAy-eD8pKIfJRPzjb_L9rhFKMqr3MG51Q7sYsLGXGETlOvYGmTBWJSyS1Zfb");'>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300">
+                            </div>
+                            <div class="absolute bottom-0 left-0 p-4">
+                                <a class="bg-primary text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full hover:bg-primary/80 transition-colors"
+                                    href="#">Ver Proyecto</a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Data Visualization
+                                Dashboard</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                An interactive dashboard for visualizing complex datasets and identifying trends.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section fade-in" aria-label="Contacto">
+            <div class="inner w-full max-w-lg mx-auto flex justify-center">
+                <div class="contact-card" role="region" aria-labelledby="contact-title">
+                    <div class="meta" aria-hidden="false">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Miguel" />
+                        <div>
+                            <h2 id="contact-title">Contacto</h2>
+                            <p class="lead">Si quieres contactarme, aquí tienes mi email y mis perfiles.</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-email" aria-live="polite">
+                        <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
+                            aria-hidden="true">
+                            <path
+                                d="M20 4H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z" />
+                        </svg>
+                        <span class="truncate">migueldelacruzcarmena03@gmail.com</span>
+                    </div>
+
+                    <div class="contact-actions" role="group" aria-label="Acciones de contacto">
+                        <button id="copy-email" data-clipboard="migueldelacruzcarmena03@gmail.com"
+                            class="contact-btn primary" aria-label="Copiar correo al portapapeles">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1z" fill="currentColor" />
+                                <path
+                                    d="M20 5H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 2v14H8V7h12z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span id="copy-label">Copiar correo</span>
+                        </button>
+
+                        <a href="https://www.linkedin.com/in/migueldelacruz" target="_blank" rel="noopener"
+                            class="contact-btn ghost" aria-label="Abrir LinkedIn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4zM8.5 8h3.8v2.16h.05c.53-1 1.82-2.06 3.75-2.06 4.01 0 4.75 2.65 4.75 6.09V24h-4v-7.5c0-1.79-.03-4.09-2.5-4.09-2.5 0-2.88 1.95-2.88 3.98V24h-4V8z" />
+                            </svg>
+                            LinkedIn
+                        </a>
+
+                        <a href="https://github.com/migueldelacruz" target="_blank" rel="noopener"
+                            class="contact-btn ghost" aria-label="Abrir GitHub">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M12 .5C5.73.5.75 5.48.75 11.76c0 4.9 3.16 9.07 7.55 10.54.55.1.74-.24.74-.52 0-.26-.01-1.12-.02-2.03-3.07.67-3.72-1.48-3.72-1.48-.5-1.28-1.22-1.62-1.22-1.62-.99-.68.08-.67.08-.67 1.1.08 1.67 1.13 1.67 1.13.97 1.66 2.55 1.18 3.17.9.1-.71.38-1.18.69-1.45-2.45-.28-5.03-1.23-5.03-5.48 0-1.21.43-2.2 1.12-2.98-.11-.28-.49-1.42.11-2.96 0 0 .92-.3 3.02 1.12a10.4 10.4 0 0 1 2.75-.37c.93.01 1.87.13 2.75.37 2.1-1.42 3.02-1.12 3.02-1.12.6 1.54.22 2.68.11 2.96.7.78 1.235 1.911 1.235 3.221 0 4.609-2.803 5.624-5.475 5.921.43.371.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.218.694.825.576 4.765-1.585 8.199-6.082 8.199-11.385 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                            GitHub
+                        </a>
+                    </div>
+
+                    <div class="contact-note">También puedes descargar mi CV desde el menú superior.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+            (function () {
+                const container = document.querySelector('.scroll-container') || window;
+                const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
+                const sections = Array.from(document.querySelectorAll('main .section'));
+                let activeIndex = -1;
+                let ticking = false;
+
+                // Detectar el botón
+                const themeToggle = document.getElementById("theme-toggle");
+                const themeIcon = document.getElementById("theme-icon");
+
+                themeToggle.addEventListener("click", () => {
+                    // Alternar la clase "dark" en <html>
+                    document.documentElement.classList.toggle("dark");
+
+                    // Cambiar icono (opcional)
+                    if (document.documentElement.classList.contains("dark")) {
+                        themeIcon.textContent = "🌙"; // modo oscuro
+                        themeToggle.setAttribute("aria-pressed", "true");
+                    } else {
+                        themeIcon.textContent = "☀️"; // modo claro
+                        themeToggle.setAttribute("aria-pressed", "false");
+                    }
+                });
+
+                // -- Helpers --
+                function setNavActive(index) {
+                    if (index === activeIndex) return;
+                    activeIndex = index;
+                    navButtons.forEach((btn, i) => {
+                        if (i === index) {
+                            btn.classList.add('nav-active');
+                            btn.setAttribute('aria-current', 'page');
+                        } else {
+                            btn.classList.remove('nav-active');
+                            btn.removeAttribute('aria-current');
+                        }
+                    });
+                }
+
+                function setSectionVisible(index) {
+                    sections.forEach((s, i) => {
+                        if (i === index) s.classList.add('visible');
+                        else s.classList.remove('visible');
+                    });
+                }
+
+                // Calcula qué sección está más centrada en la ventana (estabilidad mayor que thresholds)
+                function updateActiveOnScroll() {
+                    const viewportCenter = window.innerHeight / 2;
+                    let bestIndex = 0;
+                    let bestDistance = Infinity;
+
+                    sections.forEach((s, i) => {
+                        const rect = s.getBoundingClientRect();
+                        const sectionCenter = rect.top + rect.height / 2;
+                        const dist = Math.abs(sectionCenter - viewportCenter);
+                        if (dist < bestDistance) {
+                            bestDistance = dist;
+                            bestIndex = i;
+                        }
+                    });
+
+                    setNavActive(bestIndex);
+                    setSectionVisible(bestIndex);
+                    // si la sección activa desborda, desactiva snap para permitir scroll interno
+                    adjustSnapForActive(bestIndex);
+                }
+
+                // Navegación por botones (usa scrollIntoView; CSS scroll-margin-top compensa header)
+                navButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = Number(btn.dataset.index);
+                        if (!Number.isNaN(idx) && sections[idx]) {
+                            sections[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            // Evita que el botón quede "focus" después del click (quita apariencia pulsada)
+                            // uso un pequeño timeout para no interferir con accesibilidad inmediata del click
+                            setTimeout(() => btn.blur(), 50);
+                        }
+                    });
+                });
+
+                // Helper: desenfocar cualquier botón de navegación si el usuario hace scroll manual
+                function blurNavFocusIfNeeded() {
+                    const active = document.activeElement;
+                    if (!active) return;
+                    if (active.classList && (active.classList.contains('nav-btn') || active.classList.contains('nav-btn--link'))) {
+                        active.blur();
+                    }
+                }
+
+                // Throttle con rAF
+                function onScroll() {
+                    if (ticking) return;
+                    ticking = true;
+                    requestAnimationFrame(() => {
+                        updateActiveOnScroll();
+                        // Si el usuario está desplazando, quitar focus del botón para evitar apariencia "pulsada"
+                        blurNavFocusIfNeeded();
+                        ticking = false;
+                    });
+                }
+
+                // Ajuste snap: si la sección activa es más alta que el viewport disponible, desactivar snap
+                function getHeaderHeight() {
+                    const rootVar = getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '';
+                    const num = Number(rootVar.replace('px', '').trim());
+                    if (!Number.isNaN(num) && num > 0) return num;
+                    const hdr = document.querySelector('header');
+                    return hdr ? hdr.offsetHeight : 64;
+                }
+                function adjustSnapForActive(index) {
+                    const containerEl = document.querySelector('.scroll-container');
+                    if (!containerEl) return;
+                    const active = sections[index];
+                    if (!active) return;
+                    const headerH = getHeaderHeight();
+                    const available = window.innerHeight - headerH - 12;
+                    const overflows = active.scrollHeight > (available + 1);
+                    if (overflows) containerEl.classList.add('no-snap');
+                    else containerEl.classList.remove('no-snap');
+                }
+
+                // Navegación por botones (usa scrollIntoView; CSS scroll-margin-top compensa header)
+                navButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const idx = Number(btn.dataset.index);
+                        if (!Number.isNaN(idx) && sections[idx]) {
+                            sections[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            // Evita que el botón quede "focus" después del click (quita apariencia pulsada)
+                            // uso un pequeño timeout para no interferir con accesibilidad inmediata del click
+                            setTimeout(() => btn.blur(), 50);
+                        }
+                    });
+                });
+
+                // Helper: desenfocar cualquier botón de navegación si el usuario hace scroll manual
+                function blurNavFocusIfNeeded() {
+                    const active = document.activeElement;
+                    if (!active) return;
+                    if (active.classList && (active.classList.contains('nav-btn') || active.classList.contains('nav-btn--link'))) {
+                        active.blur();
+                    }
+                }
+
+                // Throttle con rAF
+                function onScroll() {
+                    if (ticking) return;
+                    ticking = true;
+                    requestAnimationFrame(() => {
+                        updateActiveOnScroll();
+                        // Si el usuario está desplazando, quitar focus del botón para evitar apariencia "pulsada"
+                        blurNavFocusIfNeeded();
+                        ticking = false;
+                    });
+                }
+
+                // Ajuste snap: si la sección activa es más alta que el viewport disponible, desactivar snap
+                function getHeaderHeight() {
+                    const rootVar = getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '';
+                    const num = Number(rootVar.replace('px', '').trim());
+                    if (!Number.isNaN(num) && num > 0) return num;
+                    const hdr = document.querySelector('header');
+                    return hdr ? hdr.offsetHeight : 64;
+                }
+                function adjustSnapForActive(index) {
+                    const containerEl = document.querySelector('.scroll-container');
+                    if (!containerEl) return;
+                    const active = sections[index];
+                    if (!active) return;
+                    const headerH = getHeaderHeight();
+                    const available = window.innerHeight - headerH - 12;
+                    const overflows = active.scrollHeight > (available + 1);
+                    if (overflows) containerEl.classList.add('no-snap');
+                    else containerEl.classList.remove('no-snap');
+                }
+                // Inicialización
+                updateActiveOnScroll(); // estado inicial
+                container.addEventListener('scroll', onScroll, { passive: true });
+                window.addEventListener('resize', () => adjustSnapForActive(activeIndex));
+            })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
